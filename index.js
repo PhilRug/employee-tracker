@@ -1,6 +1,6 @@
 const inquirer = require('inquirer')
 const EmployeeDb = require('./db/')
-
+//options for node
 const options = [
     "View all Deparments", 
     "View All Roles", 
@@ -27,7 +27,7 @@ async function launch() {
         break;
         case options[2]: viewEmployees();
         break;
-        case options[3]: addDepartments();
+        case options[3]: addDepartment();
         break;
         case options[4]: addRole();
         break;
@@ -37,5 +37,67 @@ async function launch() {
         break;
         case options[7]: quit();
         break;
-    }
+    }    
+}
+
+//view employee_db department table
+async function viewDepartments() {
+    const answer = "SELECT * FROM  department";
+    res = await db.query(answer);    
+    console.table(res);
+    launch();
+}
+
+//view employee_db role table
+async function viewRoles() {
+    const answer = "SELECT role.id, role.title, role.salary, department.name AS department_name FROM role INNER JOIN department ON role.department_id=department.id";
+    res = await db.query(answer);
+    console.table(res);
+    launch();
+}
+
+//view employee_db employee table
+async function viewEmployees() {
+    const answer = "select emp.id, emp.first_name, emp.last_name, role.title as job_title, department.name as department_name, role.salary as salary, emp.manager_id from employee as emp inner join role on emp.role_id=role.id inner join department on role.department_id=department.id";
+    res = await db.query(answer);
+    console.table(res);
+    launch();
+}
+
+//add department in employee_db
+async function addDepartment() {
+    const answer = await inquirer.prompt ([{
+        name: 'name',
+        type: 'input',
+        message: 'Enter Department Name',
+        validate: (name) => {return name != ''}
+    }]);
+    const sql = "INSERT INTO department SET ?";
+    await db.query(sql,
+        {
+            name: answers.name
+        }
+    );
+    console.log("\nAdded department " + answer.name + " to the database\n");
+    launch();
+}
+
+//add role in employee_db
+async function addRole() {
+    const answer = await inquirer.prompt ([{
+        name: 'name',
+        type: 'input',
+        message: 'Enter Role Name',
+        validate: (name) => {return name != ''}
+    }]);
+
+}
+//add employee in employee_db
+async function addEmployee() {
+    const answer = await inquirer.prompt ([{
+        name: 'name',
+        type: 'input',
+        message: 'Enter Department Name',
+        validate: (name) => {return name != ''}
+    }]);
 }
