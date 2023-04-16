@@ -22,7 +22,7 @@ integrated terminal using node
 node
 
 ## Credits
-n/a
+- regular expression for numbers only: https://uibakery.io/regex-library/numbers-only
     
 ## Questions
 If you have any questions you can contact me at:
