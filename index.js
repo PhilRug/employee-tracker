@@ -1,5 +1,5 @@
 const inquirer = require('inquirer')
-const EmployeeDb = require('./db/')
+const EmployeeDb = require('./lib/employee-lib')
 
 //options for node
 const options = [
@@ -12,6 +12,9 @@ const options = [
     "Update Employee Role",
     "Quit",
 ];
+
+const db = new EmployeeDb();
+launch();
 
 //start everything
 async function launch() {
@@ -176,4 +179,51 @@ async function addEmployee() {
     );
     console.log("\nAdded Employee " + answers.first_name +  " " + answers.last_name + " to the database\n");
     launch();
+}
+
+//update employee role (promotion!)
+async function updateEmployeeRole() {
+    const roles = await db.query(`SELECT id, title FROM role`);
+    const role_list = roles.map(function (x) { return x.title; });
+    const employees = await db.query(`SELECT id, concat(first_name, " ", last_name) as name FROM employee`);
+    const employee_list = employees.map(function (y) { return y.name; });
+     
+    const answers = await inquirer.prompt([
+        {
+            type: "list",
+            message: "Select the Employee's to update:",
+            name: "employee_choice",
+            choices: employee_list
+        },
+        {
+            type: "list",
+            message: "Select the Employee's new role:",
+            name: "role_choice",
+            choices: role_list
+        }
+    ]);
+
+    const sql = "UPDATE employee SET role_id=? WHERE id=?";
+          
+    await db.query(sql,
+        [
+            getRecord(roles, "title", answers.role_choice),
+            getRecord(employees, "name", answers.employee_choice)
+        ]
+    );
+    console.log("\nUpdated Employee " + answers.employee_choice +  " with Role " + answers.role_choice + "\n");
+    launch();
+}
+
+function getRecord(object_array, search_key, search_val) {
+
+    record_id = null;
+
+    for(let i=0; i<object_array.length; i++) {
+        if (object_array[i][search_key] === search_val) {
+            record_id = object_array[i].id;
+            break;
+        }
+    }
+    return record_id;
 }
