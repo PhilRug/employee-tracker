@@ -19,7 +19,7 @@ launch();
 
 //start everything
 async function launch() {
-    answers = await inquirer.prompt([{
+    const answers = await inquirer.prompt([{
         type: 'list',
         message: 'What would you like to do?',
         name: 'choices',
