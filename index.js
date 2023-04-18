@@ -128,4 +128,52 @@ async function addRole() {
 async function addEmployee() {
     const roless = await db.query(`SELECT id, name FROM role`);
     const role_list = roles.map(function (x) { return x.name });
+    const employees = await db.query(`SELECT id, concat(first_name, " ", last_name) as name FROM employee`)
+    const employee_list = employees.map(function (el) { return el.name; });
+    employee_list.push("None");
+     
+    const answers = await inquirer.prompt([
+        {
+            name: "firstname",
+            type: "input",
+            message: "Enter the Employee's first name:",
+            validate: (firstname) => { return firstname != "" }
+        },
+        {
+            name: "lastname",
+            type: "input",
+            message: "Enter the Employee's last name:",
+            validate: (lastname) => { return lastname != "" }
+        },
+        {
+            type: "list",
+            message: "Select the Employee's role:",
+            name: "role_choice",
+            choices: role_list
+        },
+        {
+            type: "list",
+            message: "Select the Employee's manager:",
+            name: "manager_choice",
+            choices: employee_list
+        }
+    ]);
+    
+    const sql = "INSERT INTO employee SET ?";
+//assign manager
+    let manager_id = null;
+    if (answers.manager_choice != "None") {
+        manager_id = getRecordId(employees, "name", answers.manager_choice);
+    }      
+                
+    await db.query(sql,
+        {
+            first_name: answers.firstname,
+            last_name: answers.lastname,
+            role_id : getRecordId(roles, "title", answers.role_choice),
+            manager_id : manager_id
+        }
+    );
+    console.log("\nAdded Employee " + answers.first_name +  " " + answers.last_name + " to the database\n");
+    launch();
 }

@@ -23,7 +23,7 @@ node
 
 ## Credits
 - regular expression for numbers only: https://uibakery.io/regex-library/numbers-only
-    
+- validation: https://sequelize.org/docs/v6/core-concepts/validations-and-constraints/
 ## Questions
 If you have any questions you can contact me at:
 - Github https://github.com/PhilRug
