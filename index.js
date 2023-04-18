@@ -1,5 +1,6 @@
-const inquirer = require('inquirer')
-const EmployeeDb = require('./lib/employee-lib')
+const inquirer = require('inquirer');
+const EmployeeDb = require('./lib/employee-lib');
+const consoleTable = require('console.table');
 
 //options for node
 const options = [

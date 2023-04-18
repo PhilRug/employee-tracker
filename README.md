@@ -13,7 +13,9 @@ A way to maintain a database for your employees for any business owner.
 - [Credits](#credits)
     
 ## Installation
-npm i inquirer@8.2.4
+- npm i inquirer@8.2.4 https://www.npmjs.com/package/inquirer/v/8.2.4
+- mysql2 https://www.npmjs.com/package/mysql2
+- console.table package https://www.npmjs.com/package/console.table
     
 ## Usage
 integrated terminal using node
