@@ -1,6 +1,6 @@
 const inquirer = require('inquirer');
 const EmployeeDb = require('./lib/employee-lib');
-const consoleTable = require('console.table');
+// const consoleTable = require('console.table');
 
 //options for node
 const options = [
@@ -15,11 +15,10 @@ const options = [
 ];
 
 const db = new EmployeeDb();
-launch();
 
-//start everything
-async function launch() {
-    const answers = await inquirer.prompt([{
+
+async function startPrompt() {
+    const inq1 = await inquirer.prompt([{
         type: 'list',
         message: 'What would you like to do?',
         name: 'choices',
@@ -27,7 +26,7 @@ async function launch() {
     }]);
 
 //choices in node
-    switch(answers.choices) {
+    switch(inq1.choices) {
         case options[0]: viewDepartments();
         break;
         case options[1]: viewRoles();
@@ -52,7 +51,7 @@ async function viewDepartments() {
     const answer = 'SELECT * FROM  department';
     res = await db.query(answer);    
     console.table(res);
-    launch();
+    startPrompt();
 }
 
 //view employee_db role table
@@ -60,7 +59,7 @@ async function viewRoles() {
     const answer = 'SELECT role.id, role.title, role.salary, department.name AS department_name FROM role INNER JOIN department ON role.department_id=department.id';
     res = await db.query(answer);
     console.table(res);
-    launch();
+    startPrompt();
 }
 
 //view employee_db employee table
@@ -68,7 +67,7 @@ async function viewEmployees() {
     const answer = 'select emp.id, emp.first_name, emp.last_name, role.title as job_title, department.name as department_name, role.salary as salary, emp.manager_id from employee as emp inner join role on emp.role_id=role.id inner join department on role.department_id=department.id';
     res = await db.query(answer);
     console.table(res);
-    launch();
+    startPrompt();
 }
 
 //add department in employee_db
@@ -86,7 +85,7 @@ async function addDepartment() {
         }
     );
     console.log('\nAdded department ' + answer.name + ' to the database\n');
-    launch();
+    startPrompt();
 }
 
 //add role in employee_db
@@ -126,7 +125,7 @@ async function addRole() {
         }
     );
     console.log('\nAdded Role ' + answer.name + ' to the database\n');
-    launch();
+    startPrompt();
 }
 //add employee in employee_db
 async function addEmployee() {
@@ -179,11 +178,11 @@ async function addEmployee() {
         }
     );
     console.log("\nAdded Employee " + answers.first_name +  " " + answers.last_name + " to the database\n");
-    launch();
+    startPrompt();
 }
 
 //update employee role (promotion!)
-async function updateEmployeeRole() {
+async function updateRole() {
     const roles = await db.query(`SELECT id, title FROM role`);
     const role_list = roles.map(function (x) { return x.title; });
     const employees = await db.query(`SELECT id, concat(first_name, " ", last_name) as name FROM employee`);
@@ -213,7 +212,7 @@ async function updateEmployeeRole() {
         ]
     );
     console.log("\nUpdated Employee " + answers.employee_choice +  " with Role " + answers.role_choice + "\n");
-    launch();
+    startPrompt();
 }
 
 function getRecord(object_array, search_key, search_val) {
@@ -228,3 +227,4 @@ function getRecord(object_array, search_key, search_val) {
     }
     return record_id;
 }
+startPrompt();
